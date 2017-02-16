@@ -19,8 +19,8 @@
 
 ## Critérios de Avaliação
 
-- Apresentação de Seminários (Proposta de Projeto, Requisitos, Modelo ER, Diagrama de Classes).
-- Entrega do Projeto (Código fonte e documentação de acordo com o modelo de TCC).
+- Apresentação de Seminários ([Proposta de Projeto](https://drive.google.com/file/d/0B8OwPRZqBPDSek4yLWx4WUdpMHc/view?usp=sharing), [Requisitos](https://drive.google.com/file/d/0B8OwPRZqBPDSTEdxeGNYbkxjc0U/view?usp=sharing), Modelo ER, Diagrama de Classes).
+- Entrega do Projeto (Código fonte e documentação de acordo com o [Modelo de TCC](https://drive.google.com/file/d/0B8OwPRZqBPDSTV9EU1VDeHNCWkk/view?usp=sharing)).
 
 #### Cálculo da média:
 

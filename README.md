@@ -22,7 +22,7 @@
 - Apresentação de Seminários (Proposta de Projeto, Requisitos, Modelo ER, Diagrama de Classes).
 - Entrega do Projeto (Código fonte e documentação de acordo com o modelo de TCC).
 
-#### Cálculo da média
+#### Cálculo da média:
 
 - Média = (Seminários * 0,4 + Projeto * 0,6)
 

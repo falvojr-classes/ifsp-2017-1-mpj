@@ -30,3 +30,5 @@
 
 - Frequência mínima: 75%
 - Contato Professor: [venilton.junior@ufsp.edu.br](mailto:venilton.junior@ufsp.edu.br)
+
+#[Estudem ;)](http://mooc.ifsp.edu.br/courses)

@@ -8,7 +8,7 @@
 
 - Realizar o desenvolvimento de um software.
 
-##### Objetivos Específicos:
+#### Objetivos Específicos:
 
 - Aplicar os conceitos de análise e modelagem de software.
 - Realizar a codificação de um software.
@@ -22,11 +22,11 @@
 - Apresentação de Seminários (Proposta de Projeto, Requisitos, Modelo ER, Diagrama de Classes).
 - Entrega do Projeto (Código fonte e documentação de acordo com o modelo de TCC).
 
-### Cálculo da média
+#### Cálculo da média
 
 - Média = (Seminários * 0,4 + Projeto * 0,6)
 
-#### Outras Informações
+## Outras Informações
 
 - Frequência mínima: 75%
 - Contato Professor: [venilton.junior@ufsp.edu.br](mailto:venilton.junior@ufsp.edu.br)

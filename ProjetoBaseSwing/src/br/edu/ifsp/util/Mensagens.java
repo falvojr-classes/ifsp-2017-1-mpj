@@ -16,7 +16,7 @@ public class Mensagens {
     public static String ERRO_AUTENTICACAO = "Usuario ou Senha inválidos.";
     
     public static String SUCESSO_AUTENTICACAO = "Usuario autenticado com sucesso!";
-    public static String SUCESSO_CADASTRO = "Usuario cadastrado com sucesso!";
+    public static String SUCESSO_USUARIO = "Usuario persistido com sucesso!";
     
     private Mensagens() {
         super();

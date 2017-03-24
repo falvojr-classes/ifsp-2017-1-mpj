@@ -68,7 +68,7 @@ public class UsuarioDao extends BaseDao implements IUsuarioDao {
     @Override
     public List<Usuario> listar() throws SQLException {
         List<Usuario> usuarios = new ArrayList<>();
-        String sql = "select u.id, u.email, u.ativo, u.id_permissao, p.descricao as desc_permissao"
+        String sql = "select u.id, u.email, u.senha, u.ativo, u.id_permissao, p.descricao as desc_permissao"
                 + " from usuario u"
                 + " inner join permissao p on u.id_permissao = p.id";
         PreparedStatement stmt = super.getConexao().prepareStatement(sql);
@@ -77,6 +77,7 @@ public class UsuarioDao extends BaseDao implements IUsuarioDao {
             Usuario usuario = new Usuario();
             usuario.setId(rs.getLong("id"));
             usuario.setEmail(rs.getString("email"));
+            usuario.setSenha(rs.getString("senha"));
             usuario.setAtivo(rs.getInt("ativo") == 1);
             Permissao permissao = new Permissao();
             permissao.setId(rs.getLong("id_permissao"));
@@ -93,7 +94,7 @@ public class UsuarioDao extends BaseDao implements IUsuarioDao {
     @Override
     public boolean autenticar(Usuario usuario) throws SQLException {
         boolean retorno = false;
-        String sql = "select count(*) from usuario where email = ? and senha = ?";
+        String sql = "select count(*) from usuario where email = ? and senha = ? and ativo = true";
         PreparedStatement stmt = super.getConexao().prepareStatement(sql);
         stmt.setString(1, usuario.getEmail());
         stmt.setString(2, usuario.getSenha());

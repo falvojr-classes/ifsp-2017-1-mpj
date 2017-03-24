@@ -6,6 +6,7 @@ import br.edu.ifsp.model.Usuario;
 import br.edu.ifsp.util.ExcecaoNegocial;
 import br.edu.ifsp.util.Mensagens;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Responsável pelas regras de negócio (entidade Usuario) e padronização das
@@ -28,21 +29,6 @@ public class UsuarioController {
         super();
     }
 
-    public void inserirCadastro(Usuario usuario) throws ExcecaoNegocial {
-        if (validarObrigatorios(usuario)) {
-            try {
-                UsuarioDao.getInstancia().inserir(usuario);
-            } catch (SQLException sqlException) {
-                throw new ExcecaoNegocial(Mensagens.ERRO_SQL, sqlException);
-            } catch (Exception exception) {
-                String mensagem = String.format(Mensagens.ERRO_INESPERADO, "Usuário");
-                throw new ExcecaoNegocial(mensagem, exception);
-            }
-        } else {
-            throw new ExcecaoNegocial(Mensagens.ERRO_CAMPOS_OBRIGATORIOS);
-        }
-    }
-
     public void autenticar(Usuario usuario) throws ExcecaoNegocial {
         boolean isEmailValido = !usuario.getEmail().isEmpty();
         boolean isSenhaValida = !usuario.getSenha().isEmpty();
@@ -54,6 +40,36 @@ public class UsuarioController {
                 }
             } catch (ExcecaoNegocial excecaoNegocial) {
                 throw excecaoNegocial;
+            } catch (SQLException sqlException) {
+                throw new ExcecaoNegocial(Mensagens.ERRO_SQL, sqlException);
+            } catch (Exception exception) {
+                String mensagem = String.format(Mensagens.ERRO_INESPERADO, "Usuário");
+                throw new ExcecaoNegocial(mensagem, exception);
+            }
+        } else {
+            throw new ExcecaoNegocial(Mensagens.ERRO_CAMPOS_OBRIGATORIOS);
+        }
+    }
+    
+    public List<Usuario> listar() throws ExcecaoNegocial {
+        try {
+            return UsuarioDao.getInstancia().listar();
+        } catch (SQLException sqlException) {
+            throw new ExcecaoNegocial(Mensagens.ERRO_SQL, sqlException);
+        } catch (Exception exception) {
+            String mensagem = String.format(Mensagens.ERRO_INESPERADO, "Usuário");
+            throw new ExcecaoNegocial(mensagem, exception);
+        }
+    }
+    
+    public void salvar(Usuario usuario) throws ExcecaoNegocial {
+        if (validarObrigatorios(usuario)) {
+            try {
+                if (usuario.getId() == null) {
+                    UsuarioDao.getInstancia().inserir(usuario);
+                } else {
+                    UsuarioDao.getInstancia().alterar(usuario);
+                }
             } catch (SQLException sqlException) {
                 throw new ExcecaoNegocial(Mensagens.ERRO_SQL, sqlException);
             } catch (Exception exception) {

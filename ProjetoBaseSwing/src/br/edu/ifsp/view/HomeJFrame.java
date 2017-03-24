@@ -12,12 +12,17 @@ import br.edu.ifsp.model.Permissao;
 import br.edu.ifsp.model.Usuario;
 import br.edu.ifsp.util.ExcecaoNegocial;
 import br.edu.ifsp.util.Mensagens;
+import java.awt.Rectangle;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.RowSorter;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableModel;
 
 /**
  * Classe responsável pelos elementos visuais da tela home.
@@ -33,12 +38,38 @@ public class HomeJFrame extends javax.swing.JFrame {
      */
     public HomeJFrame() {
         initComponents();
-        configurarComponentes();
-        try {
-            UsuarioDao.getInstancia().listar();
-        } catch (SQLException ex) {
-            Logger.getLogger(HomeJFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        carregarComponentes();
+        configurarConponentes();
+    }
+
+    /**
+     * @see http://stackoverflow.com/a/32942079/3072570
+     */
+    private void configurarConponentes() {
+        tblUsuarios.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            @Override
+            public void valueChanged(ListSelectionEvent event) {
+                final int selectedRow = tblUsuarios.getSelectedRow();
+                // Condicão necessaria para evitar click duplo.
+                if (!event.getValueIsAdjusting() && selectedRow != -1) {
+                    UsuarioTableModel model = (UsuarioTableModel) tblUsuarios.getModel();
+                    Usuario usuario = model.getUsuarios().get(tblUsuarios.convertRowIndexToModel(selectedRow));
+                    txtId.setText(usuario.getId().toString());
+                    chkAtivo.setSelected(usuario.isAtivo());
+                    txtEmail.setText(usuario.getEmail());
+                    cboPermissoes.setSelectedItem(usuario.getPermissao());
+                    txtSenha.setText(usuario.getSenha());
+                }
+            }
+        });
+        
+        tblUsuarios.setAutoCreateRowSorter(true);
+        this.ordenarPorId();
+    }
+
+    private void ordenarPorId() {
+        // Ordena pela coluna ID
+        tblUsuarios.getRowSorter().toggleSortOrder(0);
     }
 
     /**
@@ -61,6 +92,7 @@ public class HomeJFrame extends javax.swing.JFrame {
         txtEmail = new javax.swing.JTextField();
         cboPermissoes = new javax.swing.JComboBox<>();
         txtSenha = new javax.swing.JPasswordField();
+        chkAtivo = new javax.swing.JCheckBox();
         btnNovo = new javax.swing.JButton();
         btnSalvar = new javax.swing.JButton();
         btnDeletar = new javax.swing.JButton();
@@ -68,14 +100,10 @@ public class HomeJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gerenciar Usuários");
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
         tblUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {},
-                {},
-                {},
-                {}
+
             },
             new String [] {
 
@@ -96,6 +124,9 @@ public class HomeJFrame extends javax.swing.JFrame {
         txtId.setEditable(false);
         txtId.setEnabled(false);
 
+        chkAtivo.setSelected(true);
+        chkAtivo.setText("Ativo");
+
         javax.swing.GroupLayout pnlUsuarioLayout = new javax.swing.GroupLayout(pnlUsuario);
         pnlUsuario.setLayout(pnlUsuarioLayout);
         pnlUsuarioLayout.setHorizontalGroup(
@@ -113,6 +144,8 @@ public class HomeJFrame extends javax.swing.JFrame {
                     .addComponent(txtEmail)
                     .addGroup(pnlUsuarioLayout.createSequentialGroup()
                         .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(chkAtivo)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(txtSenha))
                 .addContainerGap())
@@ -123,7 +156,8 @@ public class HomeJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblId))
+                    .addComponent(lblId)
+                    .addComponent(chkAtivo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -140,6 +174,11 @@ public class HomeJFrame extends javax.swing.JFrame {
         );
 
         btnNovo.setText("Novo");
+        btnNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovoActionPerformed(evt);
+            }
+        });
 
         btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
@@ -191,30 +230,72 @@ public class HomeJFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void configurarComponentes() {
+    private void carregarComponentes() {
         try {
-            List<Permissao> lista = PermissaoController.getInstancia().listar();
-            cboPermissoes.setModel(new DefaultComboBoxModel(lista.toArray()));
+            this.carregarUsuarios(false);
+            this.carregarPermissoes();
         } catch (ExcecaoNegocial excecao) {
             Mensagens.mostrarErro(this, excecao);
         }
     }
+
+    private void carregarPermissoes() throws ExcecaoNegocial {
+        List<Permissao> lista = PermissaoController.getInstancia().listar();
+        cboPermissoes.setModel(new DefaultComboBoxModel(lista.toArray()));
+    }
+
+    private void carregarUsuarios(boolean ehInsercao) throws ExcecaoNegocial {
+        int linhaSelecionada = tblUsuarios.getSelectedRow();
+        if (linhaSelecionada == -1) {
+            linhaSelecionada = 0;
+        }
+        List<Usuario> usuarios = UsuarioController.getInstancia().listar();
+        TableModel model = new UsuarioTableModel(usuarios);
+        tblUsuarios.setModel(model);
+        if (ehInsercao) {
+            linhaSelecionada = usuarios.size() - 1;
+            this.ordenarPorId();
+            this.moverScrollFim(usuarios);
+        }
+        tblUsuarios.setRowSelectionInterval(linhaSelecionada, linhaSelecionada);
+    }
+
+    private void moverScrollFim(List<Usuario> usuarios) {
+        // Move o scroll para o fim
+        int ultimaLinha = usuarios.size() - 1;
+        tblUsuarios.scrollRectToVisible(new Rectangle(tblUsuarios.getCellRect(ultimaLinha, 0, true)));
+    }
     
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         Usuario usuario = new Usuario();
+        final boolean ehInsercao = txtId.getText().isEmpty();
+        if (!ehInsercao) {
+            usuario.setId(Long.valueOf(txtId.getText()));
+        }
+        usuario.setAtivo(chkAtivo.isSelected());
         usuario.setEmail(txtEmail.getText());
         String senha = new String(txtSenha.getPassword());
         usuario.setSenha(senha);
         usuario.setPermissao((Permissao) cboPermissoes.getSelectedItem());
         try {
-            UsuarioController.getInstancia().inserirCadastro(usuario);
-            JOptionPane.showMessageDialog(this, Mensagens.SUCESSO_CADASTRO,
+            UsuarioController.getInstancia().salvar(usuario);
+            JOptionPane.showMessageDialog(this, Mensagens.SUCESSO_USUARIO,
                     "Mensagem", JOptionPane.INFORMATION_MESSAGE);
             txtId.setText(usuario.getId().toString());
+            this.carregarUsuarios(ehInsercao);
         } catch (ExcecaoNegocial excecao) {
             Mensagens.mostrarErro(this, excecao);
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+        txtId.setText("");
+        chkAtivo.setSelected(true);
+        txtEmail.setText("");
+        cboPermissoes.setSelectedIndex(0);
+        txtSenha.setText("");
+        tblUsuarios.clearSelection();
+    }//GEN-LAST:event_btnNovoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -257,6 +338,7 @@ public class HomeJFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JComboBox<String> cboPermissoes;
+    private javax.swing.JCheckBox chkAtivo;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblId;
     private javax.swing.JLabel lblPermissao;

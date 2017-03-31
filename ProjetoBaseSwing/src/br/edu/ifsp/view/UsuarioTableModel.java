@@ -13,16 +13,20 @@ import javax.swing.table.AbstractTableModel;
  */
 public class UsuarioTableModel extends AbstractTableModel {
 
-    private final List<Usuario> usuarios;
+    private List<Usuario> usuarios;
     private final String[] colunas;
 
-    public UsuarioTableModel(List<Usuario> contatos) {
+    public UsuarioTableModel(List<Usuario> usuarios) {
         this.colunas = new String[] { "Id", "Email", "Permissão", "Status" };
-        this.usuarios = contatos;
+        this.usuarios = usuarios;
     }
 
     public List<Usuario> getUsuarios() {
         return usuarios;
+    }
+
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
     }
 
     @Override

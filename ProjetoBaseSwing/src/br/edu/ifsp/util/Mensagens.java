@@ -17,6 +17,7 @@ public class Mensagens {
     
     public static String SUCESSO_AUTENTICACAO = "Usuario autenticado com sucesso!";
     public static String SUCESSO_USUARIO = "Usuario persistido com sucesso!";
+    public static String SUCESSO_EXCLUSAO_USUARIO = "Usuario removido com sucesso!";
     
     private Mensagens() {
         super();

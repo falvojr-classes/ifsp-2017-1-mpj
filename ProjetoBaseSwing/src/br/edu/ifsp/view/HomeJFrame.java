@@ -14,7 +14,12 @@ import br.edu.ifsp.util.ExcecaoNegocial;
 import br.edu.ifsp.util.Mensagens;
 import java.awt.Rectangle;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -97,6 +102,7 @@ public class HomeJFrame extends javax.swing.JFrame {
         btnSalvar = new javax.swing.JButton();
         btnDeletar = new javax.swing.JButton();
         btnExportar = new javax.swing.JButton();
+        txtData = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gerenciar Usuários");
@@ -188,8 +194,15 @@ public class HomeJFrame extends javax.swing.JFrame {
         });
 
         btnDeletar.setText("Deletar");
+        btnDeletar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeletarActionPerformed(evt);
+            }
+        });
 
         btnExportar.setText("Exportar");
+
+        txtData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -199,15 +212,18 @@ public class HomeJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlTable, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnNovo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSalvar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDeletar)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtData, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnNovo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSalvar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDeletar)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
-                        .addComponent(btnExportar))
-                    .addComponent(pnlTable, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addComponent(btnExportar)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -223,7 +239,9 @@ public class HomeJFrame extends javax.swing.JFrame {
                     .addComponent(btnSalvar)
                     .addComponent(btnDeletar)
                     .addComponent(btnExportar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         pack();
@@ -232,8 +250,8 @@ public class HomeJFrame extends javax.swing.JFrame {
 
     private void carregarComponentes() {
         try {
-            this.carregarUsuarios(false);
             this.carregarPermissoes();
+            this.carregarUsuarios(false);
         } catch (ExcecaoNegocial excecao) {
             Mensagens.mostrarErro(this, excecao);
         }
@@ -249,15 +267,25 @@ public class HomeJFrame extends javax.swing.JFrame {
         if (linhaSelecionada == -1) {
             linhaSelecionada = 0;
         }
-        List<Usuario> usuarios = UsuarioController.getInstancia().listar();
-        TableModel model = new UsuarioTableModel(usuarios);
-        tblUsuarios.setModel(model);
+        final List<Usuario> usuarios = UsuarioController.getInstancia().listar();
+        if (tblUsuarios.getModel() instanceof UsuarioTableModel) {
+            final UsuarioTableModel model = (UsuarioTableModel) tblUsuarios.getModel();
+            model.setUsuarios(usuarios);
+            model.fireTableDataChanged();
+        } else {
+            TableModel model = new UsuarioTableModel(usuarios);
+            tblUsuarios.setModel(model);
+        }
+       
         if (ehInsercao) {
             linhaSelecionada = usuarios.size() - 1;
-            this.ordenarPorId();
             this.moverScrollFim(usuarios);
         }
-        tblUsuarios.setRowSelectionInterval(linhaSelecionada, linhaSelecionada);
+        if (!usuarios.isEmpty() && linhaSelecionada < usuarios.size()) {
+            tblUsuarios.setRowSelectionInterval(linhaSelecionada, linhaSelecionada);
+        } else {
+            limparCampos();
+        }
     }
 
     private void moverScrollFim(List<Usuario> usuarios) {
@@ -271,7 +299,7 @@ public class HomeJFrame extends javax.swing.JFrame {
         final boolean ehInsercao = txtId.getText().isEmpty();
         if (!ehInsercao) {
             usuario.setId(Long.valueOf(txtId.getText()));
-        }
+        }       
         usuario.setAtivo(chkAtivo.isSelected());
         usuario.setEmail(txtEmail.getText());
         String senha = new String(txtSenha.getPassword());
@@ -279,23 +307,45 @@ public class HomeJFrame extends javax.swing.JFrame {
         usuario.setPermissao((Permissao) cboPermissoes.getSelectedItem());
         try {
             UsuarioController.getInstancia().salvar(usuario);
+            this.carregarUsuarios(ehInsercao);
             JOptionPane.showMessageDialog(this, Mensagens.SUCESSO_USUARIO,
                     "Mensagem", JOptionPane.INFORMATION_MESSAGE);
             txtId.setText(usuario.getId().toString());
-            this.carregarUsuarios(ehInsercao);
         } catch (ExcecaoNegocial excecao) {
             Mensagens.mostrarErro(this, excecao);
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+        limparCampos();
+    }//GEN-LAST:event_btnNovoActionPerformed
+
+    private void limparCampos() {
         txtId.setText("");
         chkAtivo.setSelected(true);
         txtEmail.setText("");
         cboPermissoes.setSelectedIndex(0);
         txtSenha.setText("");
         tblUsuarios.clearSelection();
-    }//GEN-LAST:event_btnNovoActionPerformed
+    }
+
+    private void btnDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletarActionPerformed
+        Usuario usuario = new Usuario();
+        usuario.setId(Long.valueOf(txtId.getText()));
+        try {
+            String msg = String.format("Deseja realmente excluir %s?", txtEmail.getText());
+            int resposta = JOptionPane.showConfirmDialog(this, msg, "Confirmacão", JOptionPane.YES_NO_OPTION);
+            if (resposta == 0) {
+                UsuarioController.getInstancia().excluir(usuario);
+                this.carregarUsuarios(false);
+                JOptionPane.showMessageDialog(this, Mensagens.SUCESSO_EXCLUSAO_USUARIO,
+                    "Mensagem", JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+        } catch (ExcecaoNegocial excecao) {
+            Mensagens.mostrarErro(this, excecao);
+        }
+    }//GEN-LAST:event_btnDeletarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -346,6 +396,7 @@ public class HomeJFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane pnlTable;
     private javax.swing.JPanel pnlUsuario;
     private javax.swing.JTable tblUsuarios;
+    private javax.swing.JFormattedTextField txtData;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtId;
     private javax.swing.JPasswordField txtSenha;

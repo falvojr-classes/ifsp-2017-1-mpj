@@ -1,6 +1,7 @@
 package br.edu.ifsp.dao;
 
 import br.edu.ifsp.model.Usuario;
+import br.edu.ifsp.util.ExcecaoNegocial;
 import java.sql.SQLException;
 import java.util.List;
 

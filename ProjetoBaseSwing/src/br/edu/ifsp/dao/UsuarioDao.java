@@ -56,13 +56,20 @@ public class UsuarioDao extends BaseDao implements IUsuarioDao {
         stmt.setBoolean(3, usuario.isAtivo());
         stmt.setLong(4, usuario.getPermissao().getId());
         stmt.setLong(5, usuario.getId());
-        stmt.execute();
+        int linhasAfetadas = stmt.executeUpdate();
+        if (linhasAfetadas == 0) {
+            // Caso queira tratar...
+        }
         stmt.close();
     }
 
         @Override
     public void excluir(Usuario usuario) throws SQLException {
-        
+        String sql = "DELETE FROM usuario WHERE id=?";
+        PreparedStatement stmt = super.getConexao().prepareStatement(sql);
+        stmt.setLong(1, usuario.getId());
+        stmt.execute();
+        stmt.close();
     }
 
     @Override

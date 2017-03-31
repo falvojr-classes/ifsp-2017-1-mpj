@@ -50,7 +50,7 @@ public class UsuarioController {
             throw new ExcecaoNegocial(Mensagens.ERRO_CAMPOS_OBRIGATORIOS);
         }
     }
-    
+
     public List<Usuario> listar() throws ExcecaoNegocial {
         try {
             return UsuarioDao.getInstancia().listar();
@@ -61,7 +61,18 @@ public class UsuarioController {
             throw new ExcecaoNegocial(mensagem, exception);
         }
     }
-    
+
+    public void excluir(Usuario usuario) throws ExcecaoNegocial {
+        try {
+            UsuarioDao.getInstancia().excluir(usuario);
+        } catch (SQLException sqlException) {
+            throw new ExcecaoNegocial(Mensagens.ERRO_SQL, sqlException);
+        } catch (Exception exception) {
+            String mensagem = String.format(Mensagens.ERRO_INESPERADO, "Usuário");
+            throw new ExcecaoNegocial(mensagem, exception);
+        }
+    }
+
     public void salvar(Usuario usuario) throws ExcecaoNegocial {
         if (validarObrigatorios(usuario)) {
             try {

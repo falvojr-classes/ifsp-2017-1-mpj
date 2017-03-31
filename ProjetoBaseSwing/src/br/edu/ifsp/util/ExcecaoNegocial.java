@@ -7,6 +7,10 @@ package br.edu.ifsp.util;
  */
 public class ExcecaoNegocial extends Exception {
 
+    public ExcecaoNegocial() {
+        super();
+    }
+    
     public ExcecaoNegocial(String message) {
         super(message);
     }

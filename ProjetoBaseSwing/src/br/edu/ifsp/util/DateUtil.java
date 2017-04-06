@@ -11,8 +11,9 @@ import java.util.Locale;
  */
 public final class DateUtil {
 
-    public static final String PADRAO_DATA = "dd/MM/yyyy";
-    public static final Locale BRASIL = new Locale("pt", "BR");
+    public static final Locale BRASIL_LOCALE = new Locale("pt", "BR");
+    public static final String BRASIL_PATTERN = "dd/MM/yyyy";
+    public static final SimpleDateFormat BRASIL_FORMAT = new SimpleDateFormat(BRASIL_PATTERN, BRASIL_LOCALE);
     
     private DateUtil() {
         super();
@@ -21,7 +22,7 @@ public final class DateUtil {
     public static boolean validarData(String data) { 
         boolean ehValida;
         try {
-            new SimpleDateFormat(PADRAO_DATA, BRASIL).parse(data);
+            BRASIL_FORMAT.parse(data);
             ehValida = true;
         } catch (ParseException ex) {
             ehValida = false;

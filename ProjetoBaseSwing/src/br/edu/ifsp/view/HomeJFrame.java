@@ -106,7 +106,6 @@ public class HomeJFrame extends javax.swing.JFrame {
                 }
             }
         });
-
         tblUsuarios.setAutoCreateRowSorter(true);
         this.ordenarPorId();
         this.configurarTelaCheia();

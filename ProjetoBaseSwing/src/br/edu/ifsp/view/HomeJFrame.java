@@ -7,27 +7,26 @@ package br.edu.ifsp.view;
 
 import br.edu.ifsp.controller.PermissaoController;
 import br.edu.ifsp.controller.UsuarioController;
-import br.edu.ifsp.dao.UsuarioDao;
 import br.edu.ifsp.model.Permissao;
 import br.edu.ifsp.model.Usuario;
 import br.edu.ifsp.util.ExcecaoNegocial;
 import br.edu.ifsp.util.Mensagens;
 import java.awt.Rectangle;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.RowSorter;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  * Classe responsável pelos elementos visuais da tela home.
@@ -57,7 +56,7 @@ public class HomeJFrame extends javax.swing.JFrame {
                 final int selectedRow = tblUsuarios.getSelectedRow();
                 // Condicão necessaria para evitar click duplo.
                 if (!event.getValueIsAdjusting() && selectedRow != -1) {
-                    UsuarioTableModel model = (UsuarioTableModel) tblUsuarios.getModel();
+                    UsuarioTableModel model = getUsuarioTableModel();
                     Usuario usuario = model.getUsuarios().get(tblUsuarios.convertRowIndexToModel(selectedRow));
                     txtId.setText(usuario.getId().toString());
                     chkAtivo.setSelected(usuario.isAtivo());
@@ -70,6 +69,12 @@ public class HomeJFrame extends javax.swing.JFrame {
         
         tblUsuarios.setAutoCreateRowSorter(true);
         this.ordenarPorId();
+        
+        this.configurarTelaCheia(); 
+    }
+
+    private void configurarTelaCheia() {
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     private void ordenarPorId() {
@@ -93,19 +98,21 @@ public class HomeJFrame extends javax.swing.JFrame {
         lblEmail = new javax.swing.JLabel();
         lblPermissao = new javax.swing.JLabel();
         lblSenha = new javax.swing.JLabel();
+        lblExpiracao = new javax.swing.JLabel();
         txtId = new javax.swing.JTextField();
+        chkAtivo = new javax.swing.JCheckBox();
         txtEmail = new javax.swing.JTextField();
         cboPermissoes = new javax.swing.JComboBox<>();
         txtSenha = new javax.swing.JPasswordField();
-        chkAtivo = new javax.swing.JCheckBox();
+        txtExpiracao = new javax.swing.JFormattedTextField();
         btnNovo = new javax.swing.JButton();
         btnSalvar = new javax.swing.JButton();
         btnDeletar = new javax.swing.JButton();
         btnExportar = new javax.swing.JButton();
-        txtData = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gerenciar Usuários");
+        setExtendedState(6);
 
         tblUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -127,6 +134,8 @@ public class HomeJFrame extends javax.swing.JFrame {
 
         lblSenha.setText("Senha:");
 
+        lblExpiracao.setText("Expiração:");
+
         txtId.setEditable(false);
         txtId.setEnabled(false);
 
@@ -139,26 +148,29 @@ public class HomeJFrame extends javax.swing.JFrame {
             pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlUsuarioLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblPermissao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblSenha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblEmail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(lblPermissao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblSenha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblEmail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lblExpiracao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cboPermissoes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtEmail)
+                    .addComponent(txtSenha)
                     .addGroup(pnlUsuarioLayout.createSequentialGroup()
                         .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(chkAtivo)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(txtSenha))
+                        .addGap(0, 102, Short.MAX_VALUE))
+                    .addComponent(txtExpiracao))
                 .addContainerGap())
         );
         pnlUsuarioLayout.setVerticalGroup(
             pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUsuarioLayout.createSequentialGroup()
+            .addGroup(pnlUsuarioLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -176,6 +188,10 @@ public class HomeJFrame extends javax.swing.JFrame {
                 .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblSenha))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtExpiracao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblExpiracao))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -201,8 +217,11 @@ public class HomeJFrame extends javax.swing.JFrame {
         });
 
         btnExportar.setText("Exportar");
-
-        txtData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
+        btnExportar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -213,35 +232,33 @@ public class HomeJFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlTable, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnExportar))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtData, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnNovo)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnSalvar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnDeletar)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
-                        .addComponent(btnExportar)))
+                        .addComponent(btnNovo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnSalvar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnDeletar)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlTable, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(pnlUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnNovo)
-                    .addComponent(btnSalvar)
-                    .addComponent(btnDeletar)
-                    .addComponent(btnExportar))
+                .addComponent(pnlTable, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnExportar)
                 .addGap(18, 18, 18)
-                .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addComponent(pnlUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDeletar)
+                    .addComponent(btnSalvar)
+                    .addComponent(btnNovo))
+                .addGap(20, 20, 20))
         );
 
         pack();
@@ -269,7 +286,7 @@ public class HomeJFrame extends javax.swing.JFrame {
         }
         final List<Usuario> usuarios = UsuarioController.getInstancia().listar();
         if (tblUsuarios.getModel() instanceof UsuarioTableModel) {
-            final UsuarioTableModel model = (UsuarioTableModel) tblUsuarios.getModel();
+            final UsuarioTableModel model = getUsuarioTableModel();
             model.setUsuarios(usuarios);
             model.fireTableDataChanged();
         } else {
@@ -286,6 +303,10 @@ public class HomeJFrame extends javax.swing.JFrame {
         } else {
             limparCampos();
         }
+    }
+
+    private UsuarioTableModel getUsuarioTableModel() {
+        return (UsuarioTableModel) tblUsuarios.getModel();
     }
 
     private void moverScrollFim(List<Usuario> usuarios) {
@@ -347,6 +368,20 @@ public class HomeJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDeletarActionPerformed
 
+    private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarActionPerformed
+        try {
+            JasperReport report = JasperCompileManager.compileReport("relatorios/usuarios.jrxml");
+            List<Usuario> lista = getUsuarioTableModel().getUsuarios();
+
+            JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(lista));
+
+            JasperExportManager.exportReportToPdfFile(print, "relatorios/usuarios.pdf");
+        } catch(JRException jasperException) {
+            jasperException.printStackTrace();
+            Mensagens.mostrarErro(this, new ExcecaoNegocial("Erro JR!"));
+        }
+    }//GEN-LAST:event_btnExportarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -390,14 +425,15 @@ public class HomeJFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cboPermissoes;
     private javax.swing.JCheckBox chkAtivo;
     private javax.swing.JLabel lblEmail;
+    private javax.swing.JLabel lblExpiracao;
     private javax.swing.JLabel lblId;
     private javax.swing.JLabel lblPermissao;
     private javax.swing.JLabel lblSenha;
     private javax.swing.JScrollPane pnlTable;
     private javax.swing.JPanel pnlUsuario;
     private javax.swing.JTable tblUsuarios;
-    private javax.swing.JFormattedTextField txtData;
     private javax.swing.JTextField txtEmail;
+    private javax.swing.JFormattedTextField txtExpiracao;
     private javax.swing.JTextField txtId;
     private javax.swing.JPasswordField txtSenha;
     // End of variables declaration//GEN-END:variables

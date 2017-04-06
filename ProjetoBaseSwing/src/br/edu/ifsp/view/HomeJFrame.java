@@ -12,7 +12,6 @@ import br.edu.ifsp.model.Usuario;
 import br.edu.ifsp.util.ExcecaoNegocial;
 import br.edu.ifsp.util.Mensagens;
 import java.awt.Rectangle;
-import java.util.Collection;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
@@ -30,10 +29,11 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  * Classe responsável pelos elementos visuais da tela home.
- * 
+ *
  * @author falvojr
- * 
- * @see http://www.kode-blog.com/java-swing-jdbc-crud-example-with-jasper-reports
+ *
+ * @see
+ * http://www.kode-blog.com/java-swing-jdbc-crud-example-with-jasper-reports
  */
 public class HomeJFrame extends javax.swing.JFrame {
 
@@ -46,11 +46,51 @@ public class HomeJFrame extends javax.swing.JFrame {
         configurarConponentes();
     }
 
+    private void carregarComponentes() {
+        try {
+            this.carregarPermissoes();
+            this.carregarUsuarios(false);
+        } catch (ExcecaoNegocial excecao) {
+            Mensagens.mostrarErro(this, excecao);
+        }
+    }
+
+    private void carregarPermissoes() throws ExcecaoNegocial {
+        List<Permissao> lista = PermissaoController.getInstancia().listar();
+        cboPermissoes.setModel(new DefaultComboBoxModel(lista.toArray()));
+    }
+
+    private void carregarUsuarios(boolean ehInsercao) throws ExcecaoNegocial {
+        int linhaSelecionada = tblUsuarios.getSelectedRow();
+        if (linhaSelecionada == -1) {
+            linhaSelecionada = 0;
+        }
+        final List<Usuario> usuarios = UsuarioController.getInstancia().listar();
+        if (tblUsuarios.getModel() instanceof UsuarioTableModel) {
+            final UsuarioTableModel model = getUsuarioTableModel();
+            model.setUsuarios(usuarios);
+            model.fireTableDataChanged();
+        } else {
+            TableModel model = new UsuarioTableModel(usuarios);
+            tblUsuarios.setModel(model);
+        }
+
+        if (ehInsercao) {
+            linhaSelecionada = usuarios.size() - 1;
+            this.moverScrollFim(usuarios);
+        }
+        if (!usuarios.isEmpty() && linhaSelecionada < usuarios.size()) {
+            tblUsuarios.setRowSelectionInterval(linhaSelecionada, linhaSelecionada);
+        } else {
+            limparCampos();
+        }
+    }
+    
     /**
      * @see http://stackoverflow.com/a/32942079/3072570
      */
     private void configurarConponentes() {
-        tblUsuarios.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+        tblUsuarios.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent event) {
                 final int selectedRow = tblUsuarios.getSelectedRow();
@@ -66,22 +106,31 @@ public class HomeJFrame extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         tblUsuarios.setAutoCreateRowSorter(true);
         this.ordenarPorId();
-        
-        this.configurarTelaCheia(); 
-    }
-
-    private void configurarTelaCheia() {
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.configurarTelaCheia();
     }
 
     private void ordenarPorId() {
         // Ordena pela coluna ID
         tblUsuarios.getRowSorter().toggleSortOrder(0);
     }
+    
+    private void configurarTelaCheia() {
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    }
 
+    private UsuarioTableModel getUsuarioTableModel() {
+        return (UsuarioTableModel) tblUsuarios.getModel();
+    }
+
+    private void moverScrollFim(List<Usuario> usuarios) {
+        // Move o scroll para o fim
+        int ultimaLinha = usuarios.size() - 1;
+        tblUsuarios.scrollRectToVisible(new Rectangle(tblUsuarios.getCellRect(ultimaLinha, 0, true)));
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -265,62 +314,12 @@ public class HomeJFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void carregarComponentes() {
-        try {
-            this.carregarPermissoes();
-            this.carregarUsuarios(false);
-        } catch (ExcecaoNegocial excecao) {
-            Mensagens.mostrarErro(this, excecao);
-        }
-    }
-
-    private void carregarPermissoes() throws ExcecaoNegocial {
-        List<Permissao> lista = PermissaoController.getInstancia().listar();
-        cboPermissoes.setModel(new DefaultComboBoxModel(lista.toArray()));
-    }
-
-    private void carregarUsuarios(boolean ehInsercao) throws ExcecaoNegocial {
-        int linhaSelecionada = tblUsuarios.getSelectedRow();
-        if (linhaSelecionada == -1) {
-            linhaSelecionada = 0;
-        }
-        final List<Usuario> usuarios = UsuarioController.getInstancia().listar();
-        if (tblUsuarios.getModel() instanceof UsuarioTableModel) {
-            final UsuarioTableModel model = getUsuarioTableModel();
-            model.setUsuarios(usuarios);
-            model.fireTableDataChanged();
-        } else {
-            TableModel model = new UsuarioTableModel(usuarios);
-            tblUsuarios.setModel(model);
-        }
-       
-        if (ehInsercao) {
-            linhaSelecionada = usuarios.size() - 1;
-            this.moverScrollFim(usuarios);
-        }
-        if (!usuarios.isEmpty() && linhaSelecionada < usuarios.size()) {
-            tblUsuarios.setRowSelectionInterval(linhaSelecionada, linhaSelecionada);
-        } else {
-            limparCampos();
-        }
-    }
-
-    private UsuarioTableModel getUsuarioTableModel() {
-        return (UsuarioTableModel) tblUsuarios.getModel();
-    }
-
-    private void moverScrollFim(List<Usuario> usuarios) {
-        // Move o scroll para o fim
-        int ultimaLinha = usuarios.size() - 1;
-        tblUsuarios.scrollRectToVisible(new Rectangle(tblUsuarios.getCellRect(ultimaLinha, 0, true)));
-    }
-    
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         Usuario usuario = new Usuario();
         final boolean ehInsercao = txtId.getText().isEmpty();
         if (!ehInsercao) {
             usuario.setId(Long.valueOf(txtId.getText()));
-        }       
+        }
         usuario.setAtivo(chkAtivo.isSelected());
         usuario.setEmail(txtEmail.getText());
         String senha = new String(txtSenha.getPassword());
@@ -329,8 +328,7 @@ public class HomeJFrame extends javax.swing.JFrame {
         try {
             UsuarioController.getInstancia().salvar(usuario);
             this.carregarUsuarios(ehInsercao);
-            JOptionPane.showMessageDialog(this, Mensagens.SUCESSO_USUARIO,
-                    "Mensagem", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, Mensagens.SUCESSO_USUARIO, "Mensagem", JOptionPane.INFORMATION_MESSAGE);
             txtId.setText(usuario.getId().toString());
         } catch (ExcecaoNegocial excecao) {
             Mensagens.mostrarErro(this, excecao);
@@ -359,15 +357,17 @@ public class HomeJFrame extends javax.swing.JFrame {
             if (resposta == 0) {
                 UsuarioController.getInstancia().excluir(usuario);
                 this.carregarUsuarios(false);
-                JOptionPane.showMessageDialog(this, Mensagens.SUCESSO_EXCLUSAO_USUARIO,
-                    "Mensagem", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, Mensagens.SUCESSO_EXCLUSAO_USUARIO, "Mensagem", JOptionPane.INFORMATION_MESSAGE);
             }
-            
+
         } catch (ExcecaoNegocial excecao) {
             Mensagens.mostrarErro(this, excecao);
         }
     }//GEN-LAST:event_btnDeletarActionPerformed
 
+    /**
+     * @see http://www.k19.com.br/artigos/relatorios-em-java-jasperreports-e-irepor/
+     */
     private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarActionPerformed
         try {
             final List<Usuario> usuarios = getUsuarioTableModel().getUsuarios();
@@ -376,7 +376,7 @@ public class HomeJFrame extends javax.swing.JFrame {
             final JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(usuarios));
             JasperExportManager.exportReportToPdfFile(print, "relatorios/usuarios.pdf");
             JOptionPane.showMessageDialog(this, Mensagens.SUCESSO_JR, "Mensagem", JOptionPane.INFORMATION_MESSAGE);
-        } catch(JRException jasperException) {
+        } catch (JRException jasperException) {
             Mensagens.mostrarErro(this, new ExcecaoNegocial(Mensagens.ERRO_JR, jasperException));
         }
     }//GEN-LAST:event_btnExportarActionPerformed

@@ -2,6 +2,8 @@ package br.edu.ifsp.util;
 
 import java.awt.Component;
 import javax.swing.JOptionPane;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Classe que centraliza as mensagens do sistema e prove métodos úteis.
@@ -9,6 +11,7 @@ import javax.swing.JOptionPane;
  * @author Venilton FalvoJr
  */
 public class Mensagens {
+    
     public static String ERRO_CAMPOS_OBRIGATORIOS = "Todos os campos devem ser preenchidos.";
     public static String ERRO_SQL = "Ocorreu um erro na consulta ao banco de dados";
     public static String ERRO_INESPERADO = "Ocorreu um erro inesperado (%s).";
@@ -25,8 +28,12 @@ public class Mensagens {
         super();
     }
     
+    private static final Log LOGGER = LogFactory.getLog(Mensagens.class);
+    
     public static void mostrarErro(Component tela, ExcecaoNegocial excecao) {
-        JOptionPane.showMessageDialog(tela, excecao.getMessage(),
-                "Mensagem", JOptionPane.ERROR_MESSAGE);
+        if (excecao.getCause() != null) {
+            Mensagens.LOGGER.debug(excecao.getMessage(), excecao.getCause());
+        }
+        JOptionPane.showMessageDialog(tela, excecao.getMessage(), "Mensagem", JOptionPane.ERROR_MESSAGE);
     }
 }

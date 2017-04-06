@@ -14,10 +14,12 @@ public class Mensagens {
     public static String ERRO_INESPERADO = "Ocorreu um erro inesperado (%s).";
     public static String ERRO_SENHAS = "As senhas devem ser iguais.";
     public static String ERRO_AUTENTICACAO = "Usuario ou Senha inválidos.";
+    public static String ERRO_JR = "Ocorreu um erro no JasperReports.";
     
     public static String SUCESSO_AUTENTICACAO = "Usuario autenticado com sucesso!";
     public static String SUCESSO_USUARIO = "Usuario persistido com sucesso!";
     public static String SUCESSO_EXCLUSAO_USUARIO = "Usuario removido com sucesso!";
+    public static String SUCESSO_JR = "Relatório gerado com sucesso! Verifique a pasta relatorios.";
     
     private Mensagens() {
         super();

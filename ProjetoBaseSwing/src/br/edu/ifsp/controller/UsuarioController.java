@@ -1,7 +1,6 @@
 package br.edu.ifsp.controller;
 
 import br.edu.ifsp.dao.UsuarioDao;
-import br.edu.ifsp.model.Permissao;
 import br.edu.ifsp.model.Usuario;
 import br.edu.ifsp.util.ExcecaoNegocial;
 import br.edu.ifsp.util.Mensagens;

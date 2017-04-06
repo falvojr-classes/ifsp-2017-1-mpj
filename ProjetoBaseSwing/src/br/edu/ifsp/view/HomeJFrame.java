@@ -370,15 +370,14 @@ public class HomeJFrame extends javax.swing.JFrame {
 
     private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarActionPerformed
         try {
-            JasperReport report = JasperCompileManager.compileReport("relatorios/usuarios.jrxml");
-            List<Usuario> lista = getUsuarioTableModel().getUsuarios();
+            final List<Usuario> usuarios = getUsuarioTableModel().getUsuarios();
 
-            JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(lista));
-
+            final JasperReport report = JasperCompileManager.compileReport("relatorios/usuarios.jrxml");
+            final JasperPrint print = JasperFillManager.fillReport(report, null, new JRBeanCollectionDataSource(usuarios));
             JasperExportManager.exportReportToPdfFile(print, "relatorios/usuarios.pdf");
+            JOptionPane.showMessageDialog(this, Mensagens.SUCESSO_JR, "Mensagem", JOptionPane.INFORMATION_MESSAGE);
         } catch(JRException jasperException) {
-            jasperException.printStackTrace();
-            Mensagens.mostrarErro(this, new ExcecaoNegocial("Erro JR!"));
+            Mensagens.mostrarErro(this, new ExcecaoNegocial(Mensagens.ERRO_JR, jasperException));
         }
     }//GEN-LAST:event_btnExportarActionPerformed
 

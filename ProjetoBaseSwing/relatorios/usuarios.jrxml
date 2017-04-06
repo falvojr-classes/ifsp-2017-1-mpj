@@ -4,7 +4,7 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<field name="email" class="java.lang.String"/>
-	<field name="permissao" class="java.lang.String"/>
+	<field name="permissao" class="java.lang.Object"/>
 	<field name="ativo" class="java.lang.Boolean"/>
 	<group name="Group1"/>
 	<group name="Group2"/>
@@ -73,7 +73,7 @@
 			<textField>
 				<reportElement x="189" y="0" width="183" height="20" uuid="3b2837a2-6b6a-414f-bba6-a9fd43286a7e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{permissao}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{permissao}.getDescricao()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="372" y="0" width="183" height="20" uuid="52fc8379-293d-4b35-876c-29879a7c7b81"/>

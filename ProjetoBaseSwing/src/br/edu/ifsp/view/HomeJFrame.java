@@ -9,16 +9,22 @@ import br.edu.ifsp.controller.PermissaoController;
 import br.edu.ifsp.controller.UsuarioController;
 import br.edu.ifsp.model.Permissao;
 import br.edu.ifsp.model.Usuario;
+import br.edu.ifsp.util.DateUtil;
 import br.edu.ifsp.util.ExcecaoNegocial;
 import br.edu.ifsp.util.Mensagens;
 import java.awt.Rectangle;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
+import javax.swing.text.MaskFormatter;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -85,7 +91,7 @@ public class HomeJFrame extends javax.swing.JFrame {
             limparCampos();
         }
     }
-    
+
     /**
      * @see http://stackoverflow.com/a/32942079/3072570
      */
@@ -115,7 +121,7 @@ public class HomeJFrame extends javax.swing.JFrame {
         // Ordena pela coluna ID
         tblUsuarios.getRowSorter().toggleSortOrder(0);
     }
-    
+
     private void configurarTelaCheia() {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
@@ -129,7 +135,7 @@ public class HomeJFrame extends javax.swing.JFrame {
         int ultimaLinha = usuarios.size() - 1;
         tblUsuarios.scrollRectToVisible(new Rectangle(tblUsuarios.getCellRect(ultimaLinha, 0, true)));
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -152,7 +158,11 @@ public class HomeJFrame extends javax.swing.JFrame {
         txtEmail = new javax.swing.JTextField();
         cboPermissoes = new javax.swing.JComboBox<>();
         txtSenha = new javax.swing.JPasswordField();
-        txtExpiracao = new javax.swing.JFormattedTextField();
+        txtExpiracao = new javax.swing.JFormattedTextField(DateUtil.BRASIL_FORMAT);
+        try {
+            MaskFormatter dateMask = new MaskFormatter("##/##/####");
+            dateMask.install(txtExpiracao);
+        } catch (ParseException ex) { }
         btnNovo = new javax.swing.JButton();
         btnSalvar = new javax.swing.JButton();
         btnDeletar = new javax.swing.JButton();
@@ -387,7 +397,7 @@ public class HomeJFrame extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

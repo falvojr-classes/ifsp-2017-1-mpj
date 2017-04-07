@@ -32,7 +32,7 @@ public class Mensagens {
     
     public static void mostrarErro(Component tela, ExcecaoNegocial excecao) {
         if (excecao.getCause() != null) {
-            Mensagens.LOGGER.debug(excecao.getMessage(), excecao.getCause());
+            LOGGER.error(excecao.getMessage(), excecao.getCause());
         }
         JOptionPane.showMessageDialog(tela, excecao.getMessage(), "Mensagem", JOptionPane.ERROR_MESSAGE);
     }

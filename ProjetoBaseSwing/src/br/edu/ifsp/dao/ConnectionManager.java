@@ -44,7 +44,7 @@ public final class ConnectionManager {
      */
     private Connection newConnection() {
         try {
-            return DriverManager.getConnection("jdbc:mysql://127.0.0.1/mpj", "root", "root");
+            return DriverManager.getConnection("jdbc:mysql://127.0.0.1/mpj", "root", "select*from0");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }   

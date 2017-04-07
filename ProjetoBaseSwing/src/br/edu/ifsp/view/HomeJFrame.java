@@ -334,6 +334,7 @@ public class HomeJFrame extends javax.swing.JFrame {
         String senha = new String(txtSenha.getPassword());
         usuario.setSenha(senha);
         usuario.setPermissao((Permissao) cboPermissoes.getSelectedItem());
+        //TODO Tratar campo txtExpiracao (talvez seja interessante usar o componente jcalendar)
         try {
             UsuarioController.getInstancia().salvar(usuario);
             this.carregarUsuarios(ehInsercao);

@@ -93,7 +93,7 @@ public class LoginJFrame extends javax.swing.JFrame {
         usuario.setSenha(new String(senha).trim());
         try {
             UsuarioController.getInstancia().autenticar(usuario);
-            this.setVisible(false);
+            this.dispose();
             new HomeJFrame().setVisible(true);
         } catch (ExcecaoNegocial excecao) {
             Mensagens.mostrarErro(this, excecao);

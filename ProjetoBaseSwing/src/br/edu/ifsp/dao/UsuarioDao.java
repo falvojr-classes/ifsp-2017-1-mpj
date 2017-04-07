@@ -108,7 +108,7 @@ public class UsuarioDao extends BaseDao implements IUsuarioDao {
         ResultSet rs = stmt.executeQuery();
         rs.next();
         Long count = rs.getLong("count(*)");
-        if (count == 1) {
+        if (count > 0) {
             retorno = true;
         }
         stmt.close();

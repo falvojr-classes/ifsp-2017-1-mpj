@@ -3,7 +3,7 @@ use mpj;
 
 create table usuario (
   id int not null primary key auto_increment,
-  email varchar(50) not null,
+  email varchar(50) unique not null,
   senha varchar(15) not null,
   ativo int not null default 1
 );

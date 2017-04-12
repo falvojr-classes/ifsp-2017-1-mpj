@@ -26,12 +26,14 @@ public final class ConnectionManager {
 
     private ConnectionManager() {
         super();
-        this.conexao = this.newConnection();
     }
 
-    private final Connection conexao;
+    private Connection conexao;
 
-    public Connection getConexao() {
+    public Connection getConexao() throws SQLException {
+        if (this.conexao == null) {
+            this.conexao = this.newConnection();
+        }
         return this.conexao;
     }
 
@@ -42,11 +44,7 @@ public final class ConnectionManager {
      *
      * @return conexão do tipo Connection.
      */
-    private Connection newConnection() {
-        try {
-            return DriverManager.getConnection("jdbc:mysql://127.0.0.1/mpj", "root", "select*from0");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }   
+    private Connection newConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:mysql://127.0.0.1/mpj", "root", "select*from0");
     }
 }

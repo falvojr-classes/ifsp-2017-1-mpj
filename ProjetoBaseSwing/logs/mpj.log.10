@@ -1,0 +1,40 @@
+2017-04-11 19:11:57 DEBUG Digester:1313 -   Fire body() for SetNextRule[methodName=setExpression, paramType=net.sf.jasperreports.engine.JRExpression]
+2017-04-11 19:11:57 DEBUG Digester:1313 -   Fire body() for CallMethodRule[methodName=setText, paramCount=0, paramTypes={java.lang.String}]
+2017-04-11 19:11:57 DEBUG Digester:1333 -   Popping body text ''
+2017-04-11 19:11:57 DEBUG Digester:1343 -   Fire end() for CallMethodRule[methodName=setText, paramCount=0, paramTypes={java.lang.String}]
+2017-04-11 19:11:57 DEBUG Digester:621 - [CallMethodRule]{jasperReport/detail/band/textField/textFieldExpression} Call net.sf.jasperreports.engine.design.JRDesignExpression.setText($F{email}/java.lang.String)
+2017-04-11 19:11:57 DEBUG Digester:1343 -   Fire end() for SetNextRule[methodName=setExpression, paramType=net.sf.jasperreports.engine.JRExpression]
+2017-04-11 19:11:57 DEBUG Digester:198 - [SetNextRule]{jasperReport/detail/band/textField/textFieldExpression} Call net.sf.jasperreports.engine.design.JRDesignTextField.setExpression(net.sf.jasperreports.engine.design.JRDesignExpression@8360924)
+2017-04-11 19:11:57 DEBUG Digester:1343 -   Fire end() for FactoryCreateRule[className=net.sf.jasperreports.engine.xml.JRStringExpressionFactory, attributeName=null, creationFactory=net.sf.jasperreports.engine.xml.JRStringExpressionFactory@66e0caab]
+2017-04-11 19:11:57 DEBUG Digester:434 - [FactoryCreateRule]{jasperReport/detail/band/textField/textFieldExpression} Pop net.sf.jasperreports.engine.design.JRDesignExpression
+2017-04-11 19:11:57 DEBUG sax:1412 - ignorableWhitespace(
+			)
+2017-04-11 19:11:57 DEBUG sax:1287 - endElement(http://jasperreports.sourceforge.net/jasperreports,textField,textField)
+2017-04-11 19:11:57 DEBUG Digester:1290 -   match='jasperReport/detail/band/textField'
+2017-04-11 19:11:57 DEBUG Digester:1291 -   bodyText=''
+2017-04-11 19:11:57 DEBUG Digester:1313 -   Fire body() for FactoryCreateRule[className=net.sf.jasperreports.engine.xml.JRTextFieldFactory, attributeName=null, creationFactory=net.sf.jasperreports.engine.xml.JRTextFieldFactory@414477e8]
+2017-04-11 19:11:57 DEBUG Digester:1313 -   Fire body() for SetNextRule[methodName=addElement, paramType=net.sf.jasperreports.engine.design.JRDesignElement]
+2017-04-11 19:11:57 DEBUG Digester:1333 -   Popping body text ''
+2017-04-11 19:11:57 DEBUG Digester:1343 -   Fire end() for SetNextRule[methodName=addElement, paramType=net.sf.jasperreports.engine.design.JRDesignElement]
+2017-04-11 19:11:57 DEBUG Digester:198 - [SetNextRule]{jasperReport/detail/band/textField} Call net.sf.jasperreports.engine.design.JRDesignBand.addElement(net.sf.jasperreports.engine.design.JRDesignTextField@3c2fdd41)
+2017-04-11 19:11:57 DEBUG Digester:1343 -   Fire end() for FactoryCreateRule[className=net.sf.jasperreports.engine.xml.JRTextFieldFactory, attributeName=null, creationFactory=net.sf.jasperreports.engine.xml.JRTextFieldFactory@414477e8]
+2017-04-11 19:11:57 DEBUG Digester:434 - [FactoryCreateRule]{jasperReport/detail/band/textField} Pop net.sf.jasperreports.engine.design.JRDesignTextField
+2017-04-11 19:11:57 DEBUG sax:1412 - ignorableWhitespace(
+		)
+2017-04-11 19:11:57 DEBUG sax:1287 - endElement(http://jasperreports.sourceforge.net/jasperreports,band,band)
+2017-04-11 19:11:57 DEBUG Digester:1290 -   match='jasperReport/detail/band'
+2017-04-11 19:11:57 DEBUG Digester:1291 -   bodyText=''
+2017-04-11 19:11:57 DEBUG Digester:1313 -   Fire body() for FactoryCreateRule[className=net.sf.jasperreports.engine.xml.JRBandFactory, attributeName=null, creationFactory=net.sf.jasperreports.engine.xml.JRBandFactory@47bce2a]
+2017-04-11 19:11:57 DEBUG Digester:1313 -   Fire body() for SetNextRule[methodName=addBand, paramType=net.sf.jasperreports.engine.JRBand]
+2017-04-11 19:11:57 DEBUG Digester:1333 -   Popping body text ''
+2017-04-11 19:11:57 DEBUG Digester:1343 -   Fire end() for SetNextRule[methodName=addBand, paramType=net.sf.jasperreports.engine.JRBand]
+2017-04-11 19:11:57 DEBUG Digester:198 - [SetNextRule]{jasperReport/detail/band} Call net.sf.jasperreports.engine.design.JRDesignSection.addBand(net.sf.jasperreports.engine.design.JRDesignBand@6a5de28c)
+2017-04-11 19:11:57 DEBUG Digester:1343 -   Fire end() for FactoryCreateRule[className=net.sf.jasperreports.engine.xml.JRBandFactory, attributeName=null, creationFactory=net.sf.jasperreports.engine.xml.JRBandFactory@47bce2a]
+2017-04-11 19:11:57 DEBUG Digester:434 - [FactoryCreateRule]{jasperReport/detail/band} Pop net.sf.jasperreports.engine.design.JRDesignBand
+2017-04-11 19:11:57 DEBUG sax:1412 - ignorableWhitespace(
+	)
+2017-04-11 19:11:57 DEBUG sax:1287 - endElement(http://jasperreports.sourceforge.net/jasperreports,detail,detail)
+2017-04-11 19:11:57 DEBUG Digester:1290 -   match='jasperReport/detail'
+2017-04-11 19:11:57 DEBUG Digester:1291 -   bodyText=''
+2017-04-11 19:11:57 DEBUG Digester:1313 -   Fire body() for FactoryCreateRule[className=net.sf.jasperreports.engine.xml.JRSectionFactory$DetailSectionFactory, attributeName=null, creationFactory=net.sf.jasperreports.engine.xml.JRSectionFactory$DetailSectionFactory@7520d00a]
+2017-04-11 19:11:57 DEBUG Digester:1333 -   Popping body text ''

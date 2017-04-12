@@ -20,7 +20,7 @@ public class BaseDao {
      *
      * @return instância única de Connection.
      */
-    protected Connection getConexao() {
+    protected Connection getConexao() throws SQLException {
         return ConnectionManager.getInstancia().getConexao();
     }
 

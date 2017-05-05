@@ -5,4 +5,5 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="msg_required">Required field.</string>
+    <string name="hello_user">Hello %s!</string>
 </resources>

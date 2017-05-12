@@ -6,4 +6,11 @@
     <string name="login">Login</string>
     <string name="msg_required">Required field.</string>
     <string name="hello_user">Hello %s!</string>
+    <string name="msg_login_error">Email e/ou Senha incorretos!</string>
+    <string name="dialog_alert">Alerta</string>
+    <string name="name">Nome</string>
+    <string name="phone">Telefone</string>
+    <string name="lat">Latitude</string>
+    <string name="lon">Longitude</string>
+    <string name="save">Salvar</string>
 </resources>

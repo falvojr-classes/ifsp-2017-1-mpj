@@ -6,4 +6,9 @@
     <string name="password">Senha</string>
     <string name="msg_required">Campo obrigatório.</string>
     <string name="hello_user">Olá %s!</string>
+    <string name="msg_login_error">Email e/ou Senha incorretos!</string>
+    <string name="dialog_alert">Alerta</string>
+    <string name="name">Nome</string>
+    <string name="phone">Telefone</string>
+    <string name="save">Salvar</string>
 </resources>

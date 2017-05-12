@@ -3,27 +3,27 @@ package br.edu.ifsp.mpj.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
+import com.orm.SugarRecord;
 
-public class User implements Parcelable {
+public class User extends SugarRecord implements Parcelable {
 
-    private String mEmail;
-    private String mPassword;
+    private String email;
+    private String password;
 
     public String getEmail() {
-        return mEmail;
+        return email;
     }
 
     public void setEmail(String email) {
-        this.mEmail = email;
+        this.email = email;
     }
 
     public String getPassword() {
-        return mPassword;
+        return password;
     }
 
     public void setPassword(String password) {
-        this.mPassword = password;
+        this.password = password;
     }
 
     @Override
@@ -33,16 +33,17 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.mEmail);
-        dest.writeString(this.mPassword);
+        dest.writeString(this.email);
+        dest.writeString(this.password);
     }
 
     public User() {
+        super();
     }
 
     protected User(Parcel in) {
-        this.mEmail = in.readString();
-        this.mPassword = in.readString();
+        this.email = in.readString();
+        this.password = in.readString();
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {

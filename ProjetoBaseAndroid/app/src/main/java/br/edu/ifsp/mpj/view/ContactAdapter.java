@@ -1,4 +1,4 @@
-package br.edu.ifsp.mpj;
+package br.edu.ifsp.mpj.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,16 +8,22 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import br.edu.ifsp.mpj.entity.Contact;
+
 class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
 
     public interface OnItemClickListener {
-        void onItemClick(String phone);
+        void onItemClick(Contact contact);
     }
 
-    private final String[] mDataSet;
+    private List<Contact> mDataSet;
     private OnItemClickListener mOnItemClickListener;
 
-    ContactAdapter(String[] dataSet, OnItemClickListener onItemClickListener) {
+    public void setDataSet(List<Contact> dataSet) {
+        mDataSet = dataSet;
+    }
+
+    ContactAdapter(List<Contact> dataSet, OnItemClickListener onItemClickListener) {
         mDataSet = dataSet;
         mOnItemClickListener = onItemClickListener;
     }
@@ -31,19 +37,19 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final String phone = mDataSet[position];
+        final Contact contact = mDataSet.get(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnItemClickListener.onItemClick(phone);
+                mOnItemClickListener.onItemClick(contact);
             }
         });
-        holder.mTextView.setText(phone);
+        holder.mTextView.setText(contact.getPhone());
     }
 
     @Override
     public int getItemCount() {
-        return mDataSet.length;
+        return mDataSet.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

@@ -13,4 +13,9 @@
     <string name="lat">Latitude</string>
     <string name="lon">Longitude</string>
     <string name="save">Salvar</string>
+    <string name="menu_call">Ligar!</string>
+    <string name="menu_edit">Editar</string>
+    <string name="menu_maps">Localizacão</string>
+    <string name="menu_delete">Excluir</string>
+    <string name="msg_delete">Deseja realmente excluir o registro?</string>
 </resources>

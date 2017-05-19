@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import java.util.List;
+import java.util.Locale;
 
 import br.edu.ifsp.mpj.R;
 import br.edu.ifsp.mpj.entity.Contact;
@@ -20,6 +21,8 @@ import br.edu.ifsp.mpj.entity.User;
 public class ListActivity extends AppCompatActivity {
 
     public static final String KEY_USER = "MY_USER_KEY";
+    public static final int REQUEST_EDIT = 100;
+    public static final int REQUEST_NEW = 99;
 
     private RecyclerView mRecyclerView;
     private ContactAdapter mAdapter;
@@ -46,13 +49,31 @@ public class ListActivity extends AppCompatActivity {
         // specify an adapter (see also next example)
         mAdapter = new ContactAdapter(all, new ContactAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(Contact contact) {
+            public void onCallClick(Contact contact) {
                 //FEITO (4) Realizar uma chamada telefônica via Intent
                 // http://stackoverflow.com/a/13123613/3072570
                 Uri uri = Uri.parse("tel:" + contact.getPhone());
                 Intent intent = new Intent(Intent.ACTION_DIAL, uri);
                 startActivity(intent);
             }
+
+            @Override
+            public void onEditClick(Contact contact) {
+                Intent intentEdit = new Intent(ListActivity.this, ContactActivity.class);
+                intentEdit.putExtra(ContactActivity.KEY_EDIT_DATA, contact);
+                startActivityForResult(intentEdit, REQUEST_EDIT);
+            }
+
+            @Override
+            public void onMapsClick(Contact contact) {
+                //TODO Pegar a localizacao atual!
+                String origem = "saddr=-21.783873,-48.210575";
+                String destino = String.format(Locale.ENGLISH, "daddr=%.6f,%.6f", contact.getLatitude(), contact.getLongitude());
+                String uri = "http://maps.google.com/maps?f=d&hl=en&" + origem +"&" + destino;
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+                startActivity(Intent.createChooser(intent, "Select an application"));
+            }
+
         });
         mRecyclerView.setAdapter(mAdapter);
 
@@ -68,8 +89,8 @@ public class ListActivity extends AppCompatActivity {
         mFabNovo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intencao = new Intent(ListActivity.this, ContactActivity.class);
-                startActivityForResult(intencao, 99);
+                Intent intentNew = new Intent(ListActivity.this, ContactActivity.class);
+                startActivityForResult(intentNew, REQUEST_NEW);
             }
         });
     }
@@ -81,10 +102,21 @@ public class ListActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 99) {
-            if(resultCode == Activity.RESULT_OK) {
+        final boolean isNew = requestCode == REQUEST_NEW;
+        if (isNew || requestCode == REQUEST_EDIT) {
+            final boolean isDelete = resultCode == ContactActivity.RESULT_DELETE;
+            if(resultCode == Activity.RESULT_OK || isDelete) {
                 updateList();
-                Snackbar.make(mRecyclerView, "Contato cadastrado com sucesso!", Snackbar.LENGTH_LONG).show();
+                String op;
+                if (isNew) {
+                    op = "inserido";
+                } else if (isDelete) {
+                    op = "excluido";
+                } else {
+                    op = "alterado";
+                }
+                String msg = String.format("Contato %s com sucesso!", op);
+                Snackbar.make(mRecyclerView, msg, Snackbar.LENGTH_LONG).show();
             }
         }
     }

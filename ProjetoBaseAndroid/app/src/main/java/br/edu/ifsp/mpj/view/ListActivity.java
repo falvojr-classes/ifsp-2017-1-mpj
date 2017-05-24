@@ -17,6 +17,7 @@ import java.util.Locale;
 import br.edu.ifsp.mpj.R;
 import br.edu.ifsp.mpj.entity.Contact;
 import br.edu.ifsp.mpj.entity.User;
+import br.edu.ifsp.mpj.view.adaper.ContactAdapter;
 
 public class ListActivity extends AppCompatActivity {
 

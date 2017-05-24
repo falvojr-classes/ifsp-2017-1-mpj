@@ -1,4 +1,4 @@
-package br.edu.ifsp.mpj.view;
+package br.edu.ifsp.mpj.view.adaper;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +14,7 @@ import java.util.List;
 import br.edu.ifsp.mpj.R;
 import br.edu.ifsp.mpj.entity.Contact;
 
-class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
+public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
 
     public interface OnItemClickListener {
         void onCallClick(Contact contact);
@@ -29,7 +29,7 @@ class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
         mDataSet = dataSet;
     }
 
-    ContactAdapter(List<Contact> dataSet, OnItemClickListener onItemClickListener) {
+    public ContactAdapter(List<Contact> dataSet, OnItemClickListener onItemClickListener) {
         mDataSet = dataSet;
         mOnItemClickListener = onItemClickListener;
     }

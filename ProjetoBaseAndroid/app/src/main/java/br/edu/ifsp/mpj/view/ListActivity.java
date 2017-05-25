@@ -2,10 +2,12 @@ package br.edu.ifsp.mpj.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +20,10 @@ import br.edu.ifsp.mpj.R;
 import br.edu.ifsp.mpj.entity.Contact;
 import br.edu.ifsp.mpj.entity.User;
 import br.edu.ifsp.mpj.view.adaper.ContactAdapter;
+import io.nlopez.smartlocation.OnLocationUpdatedListener;
+import io.nlopez.smartlocation.SmartLocation;
+import io.nlopez.smartlocation.location.config.LocationAccuracy;
+import io.nlopez.smartlocation.location.config.LocationParams;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -25,10 +31,14 @@ public class ListActivity extends AppCompatActivity {
     public static final int REQUEST_EDIT = 100;
     public static final int REQUEST_NEW = 99;
 
+    private static long TRACKING_INTERVAL = 1000 * 5; // 5 seg.
+    private static float TRACKING_DISTANCE = 0;
+
     private RecyclerView mRecyclerView;
     private ContactAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton mFabNovo;
+    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +77,22 @@ public class ListActivity extends AppCompatActivity {
 
             @Override
             public void onMapsClick(Contact contact) {
-                //TODO Pegar a localizacao atual!
-                String origem = "saddr=-21.783873,-48.210575";
-                String destino = String.format(Locale.ENGLISH, "daddr=%.6f,%.6f", contact.getLatitude(), contact.getLongitude());
-                String uri = "http://maps.google.com/maps?f=d&hl=en&" + origem +"&" + destino;
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
-                startActivity(Intent.createChooser(intent, "Select an application"));
+                if (mLastLocation != null) {
+                    //FEITO Pegar a localizacao atual!
+                    final double latitude = mLastLocation.getLatitude();
+                    final double longitude = mLastLocation.getLongitude();
+                    String sAddr = formatMapsLocation("saddr=%.6f,%.6f", latitude, longitude);
+                    String dAddr = formatMapsLocation("daddr=%.6f,%.6f", contact.getLatitude(), contact.getLongitude());
+                    String uri = "http://maps.google.com/maps?f=d&hl=en&" + sAddr + "&" + dAddr;
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    startActivity(Intent.createChooser(intent, "Select an application"));
+                } else {
+                    new AlertDialog.Builder(ListActivity.this)
+                            .setMessage(R.string.msg_location_not_found)
+                            .setTitle(R.string.dialog_alert)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .create().show();
+                }
             }
 
         });
@@ -94,6 +114,16 @@ public class ListActivity extends AppCompatActivity {
                 startActivityForResult(intentNew, REQUEST_NEW);
             }
         });
+    }
+
+    private String formatMapsLocation(String format, double latitude, double longitude) {
+        return String.format(Locale.ENGLISH, format, latitude, longitude);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.startLocationListener();
     }
 
     private void updateList() {
@@ -120,5 +150,24 @@ public class ListActivity extends AppCompatActivity {
                 Snackbar.make(mRecyclerView, msg, Snackbar.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void startLocationListener() {
+
+        LocationParams.Builder builder = new LocationParams.Builder()
+                .setAccuracy(LocationAccuracy.HIGH)
+                .setDistance(TRACKING_DISTANCE)
+                .setInterval(TRACKING_INTERVAL);
+
+        SmartLocation.with(this)
+                .location()
+                .continuous()
+                .config(builder.build())
+                .start(new OnLocationUpdatedListener() {
+                    @Override
+                    public void onLocationUpdated(Location location) {
+                        mLastLocation = location;
+                    }
+                });
     }
 }

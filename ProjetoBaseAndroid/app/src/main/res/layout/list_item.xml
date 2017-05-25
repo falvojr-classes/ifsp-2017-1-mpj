@@ -26,14 +26,14 @@
                 <TextView
                     android:id="@+id/lblNome"
                     style="@style/Base.TextAppearance.AppCompat.Large"
-                    android:layout_width="253dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Teste" />
 
                 <TextView
                     android:id="@+id/lblTelefone"
                     style="@style/Base.TextAppearance.AppCompat.Small"
-                    android:layout_width="254dp"
+                    android:layout_width="326dp"
                     android:layout_height="wrap_content"
                     android:text="(16) 999999999" />
 
@@ -42,7 +42,7 @@
             <ImageView
                 android:id="@+id/ivMenu"
                 android:layout_marginTop="8dp"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_menu_item" />
 

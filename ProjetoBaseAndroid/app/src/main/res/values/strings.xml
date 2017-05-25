@@ -1,21 +1,24 @@
 <resources>
     <string name="app_name">MPJ</string>
-    <string name="hello_world">Hello World</string>
+
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="msg_required">Required field.</string>
     <string name="hello_user">Hello %s!</string>
-    <string name="msg_login_error">Email e/ou Senha incorretos!</string>
-    <string name="dialog_alert">Alerta</string>
-    <string name="name">Nome</string>
-    <string name="phone">Telefone</string>
+    <string name="dialog_alert">Alert</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
     <string name="lat">Latitude</string>
     <string name="lon">Longitude</string>
-    <string name="save">Salvar</string>
-    <string name="menu_call">Ligar!</string>
-    <string name="menu_edit">Editar</string>
-    <string name="menu_maps">Localizacão</string>
-    <string name="menu_delete">Excluir</string>
-    <string name="msg_delete">Deseja realmente excluir o registro?</string>
+    <string name="save">Save</string>
+
+    <string name="menu_call">Call</string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_maps">Location</string>
+    <string name="menu_delete">Delete</string>
+
+    <string name="msg_login_error">Email and/or password incorrect!</string>
+    <string name="msg_delete">Do you really want to delete the registry?</string>
+    <string name="msg_location_not_found">Location not found, please try again later.</string>
 </resources>

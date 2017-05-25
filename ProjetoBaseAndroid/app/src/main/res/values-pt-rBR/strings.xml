@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Pipoca</string>
-    <string name="hello_world">Olá Mundo</string>
-    <string name="email">Email</string>
     <string name="password">Senha</string>
     <string name="msg_required">Campo obrigatório.</string>
     <string name="hello_user">Olá %s!</string>
-    <string name="msg_login_error">Email e/ou Senha incorretos!</string>
     <string name="dialog_alert">Alerta</string>
     <string name="name">Nome</string>
     <string name="phone">Telefone</string>
     <string name="save">Salvar</string>
-    <string name="menu_delete">Excluir</string>
+
+    <string name="menu_call">Chamar</string>
+    <string name="menu_edit">Editar</string>
+    <string name="menu_maps">Localizacão</string>
+    <string name="menu_delete">Deletar</string>
+
+    <string name="msg_login_error">Email e/ou senha incorretos!</string>
+    <string name="msg_delete">Realmente deseja excluir esse registro?</string>
+    <string name="msg_location_not_found">Localizacão não encontrada, tente novamente mais tarde.</string>
 </resources>

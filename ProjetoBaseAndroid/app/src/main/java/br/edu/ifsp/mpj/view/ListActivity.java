@@ -28,6 +28,7 @@ import io.nlopez.smartlocation.location.config.LocationParams;
 public class ListActivity extends AppCompatActivity {
 
     public static final String KEY_USER = "MY_USER_KEY";
+
     public static final int REQUEST_EDIT = 100;
     public static final int REQUEST_NEW = 99;
 
@@ -152,6 +153,9 @@ public class ListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @see https://github.com/mrmans0n/smart-location-lib
+     */
     private void startLocationListener() {
 
         LocationParams.Builder builder = new LocationParams.Builder()
